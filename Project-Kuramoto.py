@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as mp
 
 import Kuramoto as ku
+import OrderParameter as op
 
 
 w = np.linspace(0,50,num=50)
@@ -12,14 +13,15 @@ b = 0.23*np.pi
 sigma = 1
 
 myKuramoto1 = ku.Kuramoto(w, a, e, b, sigma)
+myOrderParameter = op.OrderParameter()
 
 kuramotoResults1 = myKuramoto1.solveKuramoto(50)
 #myKuramoto1.printInitialConditions()
-myKuramoto1.getPhasesFromAllTimeStepsInResults()
-myKuramoto1.CreateOrderMatrixArray()
-myKuramoto1.SumUpOrderMatrixArray()
-orderParam = myKuramoto1.SumUpOM_Elements()
-print("Order Parameter:", orderParam)
+
+phases_only = myKuramoto1.getPhases() 
+orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( phases_only )
+
+print("Order Parameter:", orderParameter)
 #myKuramoto1.printResults()
 #mp.plot( kuramotoResults1 )
 #mp.show()

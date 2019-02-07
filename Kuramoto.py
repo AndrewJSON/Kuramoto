@@ -4,7 +4,6 @@ from scipy.integrate import odeint
 import matplotlib.pyplot as mp
 from numpy import diff
 
-
 class Kuramoto:
 
     def __init__(self, _w, _a, _e, _b, _sigma):
@@ -44,7 +43,12 @@ class Kuramoto:
         Phis = self.results[:, :_N]
         Omegas = (Phis[999, :] - Phis[200, :]) / 799
         dtype = [('node', int), ('omega', float), ('phase', float)]
-        values = [(i, round(Omegas[i], 2), np.mod(Phis[999, i], 2 * np.pi)) for i in range(_N)]
+
+        values = [(i,\
+                   round(Omegas[i], 2),\
+                   np.mod(Phis[999, i],\
+                   2 * np.pi)) for i in range(_N)]
+
         nodes = np.array(values, dtype=dtype)
         nodes_sorted = np.sort(nodes, order=['omega', 'phase'])
         kappa = self.results[-1,_N:].reshape(_N,_N)
@@ -63,70 +67,6 @@ class Kuramoto:
         self.dydt = np.concatenate((DPhis, DKappa.flatten()))
 
         return self.dydt
-
-    def orderParameter(self):
-
-        Phases = self.getPhasesFromAllTimeStepsInResults()
-        PhaseDiff = self.getInterlayerPhaseDifferences( Phases )
-        Order = np.exp(PhiDiff,)
-
-
-    def getPhasesFromAllTimeStepsInResults(self):
-        Results = np.array(self.results[: , :self.N])
-        return Results
-
-
-
-    def CreateOrderMatrixArray(self):
-
-        _phases = self.getPhasesFromAllTimeStepsInResults()
-        MatrixArray = []
-        timeStepCount = _phases.shape[0]
-
-        for ts in range(0,timeStepCount):
-            singleTimeStepPhaseDiff = _phases[ts] - _phases[ts][:, np.newaxis]
-            MatrixArray.append( singleTimeStepPhaseDiff )
-
-
-        #print(timeStepCount)
-        #print(OM[999].shape)
-        #print(OM)
-
-
-        return np.array(MatrixArray)
-
-
-
-
-    def SumUpOrderMatrixArray(self):
-
-        _omList = self.CreateOrderMatrixArray()
-        omShape = _omList[0].shape
-        sumOM = np.zeros(omShape)
-        _phases = self.getPhasesFromAllTimeStepsInResults()
-
-        for matrix in _omList:
-            sumOM += matrix
-        #print(_omList)
-        #print(_phases.shape[0])
-        #print(sumOM[49].shape)
-
-
-        sumOM = np.exp(1j*sumOM)
-        #sumOM = np.abs(sumOM)
-        sumOM = sumOM / _phases.shape[0]
-
-        #print(sumOM)
-
-        return sumOM
-
-
-    def SumUpOM_Elements(self):
-
-        OrderMatrix = self.SumUpOrderMatrixArray()
-        OrderParam = np.sum(OrderMatrix)/(OrderMatrix.shape[0]*OrderMatrix.shape[0])
-        return OrderParam
-
 
 
     def makeInitConditions(self):
@@ -153,6 +93,12 @@ class Kuramoto:
         return self.results
 
 
+    def getPhases(self):
+
+        phases = np.array(self.results[: , :self.N])
+        return phases
+
+
 
 if __name__ == '__main__':
 
@@ -167,15 +113,10 @@ if __name__ == '__main__':
     myKuramoto1 = Kuramoto(w, a, e, b, sigma)
 
     kuramotoResults1 = myKuramoto1.solveKuramoto(50)
-    #myKuramoto1.printInitialConditions()
-    myKuramoto1.getPhasesFromAllTimeStepsInResults()
-    myKuramoto1.CreateOrderMatrixArray()
-    myKuramoto1.SumUpOrderMatrixArray()
-    orderParam = myKuramoto1.SumUpOM_Elements()
-    print("Order Parameter:", orderParam)
-    #myKuramoto1.printResults()
-    #mp.plot( kuramotoResults1 )
-    #mp.show()
+    myKuramoto1.printInitialConditions()
+    myKuramoto1.printResults()
+    mp.plot( kuramotoResults1 )
+    mp.show()
     #Phases, Kappas = myKuramoto1.sortData(50)
     #mp.plot (Phases[:]["omega"])
     #mp.show()
