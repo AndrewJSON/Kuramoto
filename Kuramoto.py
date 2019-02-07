@@ -1,40 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as mp
@@ -191,6 +155,8 @@ class Kuramoto:
 
 
 if __name__ == '__main__':
+
+    print("hello")
 
     w = np.linspace(0,50,num=50)
     a = 0.3*np.pi
