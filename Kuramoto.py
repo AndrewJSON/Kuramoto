@@ -125,7 +125,7 @@ class Kuramoto:
 
         OrderMatrix = self.SumUpOrderMatrixArray()
         OrderParam = np.sum(OrderMatrix)/(OrderMatrix.shape[0]*OrderMatrix.shape[0])
-        print(OrderParam)
+        return OrderParam
 
 
 
@@ -156,7 +156,7 @@ class Kuramoto:
 
 if __name__ == '__main__':
 
-    print("hello")
+
 
     w = np.linspace(0,50,num=50)
     a = 0.3*np.pi
@@ -171,7 +171,8 @@ if __name__ == '__main__':
     myKuramoto1.getPhasesFromAllTimeStepsInResults()
     myKuramoto1.CreateOrderMatrixArray()
     myKuramoto1.SumUpOrderMatrixArray()
-    myKuramoto1.SumUpOM_Elements()
+    orderParam = myKuramoto1.SumUpOM_Elements()
+    print("Order Parameter:", orderParam)
     #myKuramoto1.printResults()
     #mp.plot( kuramotoResults1 )
     #mp.show()
