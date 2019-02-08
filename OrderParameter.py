@@ -1,4 +1,14 @@
 
+''' 
+ * OrderParameter.py
+ *
+ *   Created on:         07.02.2019
+ *   Author:             Philippe Lehmann
+ * 
+ * General description:
+ *   xxx
+'''
+
 import numpy as np
 
 class OrderParameter:

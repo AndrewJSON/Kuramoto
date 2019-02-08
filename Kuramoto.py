@@ -1,4 +1,14 @@
 
+''' 
+ * Kuramoto.py
+ *
+ *   Created on:         08.01.2019
+ *   Author:             Philippe Lehmann
+ * 
+ * General description:
+ *   xxx
+'''
+
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as mp
@@ -26,6 +36,14 @@ class Kuramoto:
         print("Results:")
         print( self.results )
         print (self.results.shape)
+
+    def printPhases(self):
+
+        print("Phases:")
+        phases_only = self.getPhases()
+        print( phases_only )
+        print("shape:", phases_only.shape )
+
 
     def printInitialConditions(self):
         print("Initial conditions:")
@@ -99,10 +117,9 @@ class Kuramoto:
         return phases
 
 
-
 if __name__ == '__main__':
 
-
+    plot_results = False
 
     w = np.linspace(0,50,num=50)
     a = 0.3*np.pi
@@ -114,9 +131,12 @@ if __name__ == '__main__':
 
     kuramotoResults1 = myKuramoto1.solveKuramoto(50)
     myKuramoto1.printInitialConditions()
-    myKuramoto1.printResults()
-    mp.plot( kuramotoResults1 )
-    mp.show()
+    #myKuramoto1.printResults()
+    myKuramoto1.printPhases()
+
+    if plot_results:
+        mp.plot( kuramotoResults1 )
+        mp.show()
     #Phases, Kappas = myKuramoto1.sortData(50)
     #mp.plot (Phases[:]["omega"])
     #mp.show()
@@ -124,9 +144,5 @@ if __name__ == '__main__':
     #mp.colorbar()
     #mp.show()
 
-
 ''' END '''
-
-
-
 
