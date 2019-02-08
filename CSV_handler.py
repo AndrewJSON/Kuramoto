@@ -15,19 +15,20 @@ import numpy as np
 
 class CSV_handler:
 
-    def __init__(self, _fileName):
-        self.fileName = _fileName
+    def __init__(self):
+        pass
 
 
-    def writeVectorsToFile(self, _vectors):
+    def writeVectorsToFile(self, _vectors, _fileName='kuramoto-results.csv'):
 
-        with open( self.fileName, mode='w' ) as out_file:
+        with open( _fileName, mode='w' ) as out_file:
             csv_writer = csv.writer( out_file,      \
                                      delimiter=',', \
                                      quotechar='"', \
                                      quoting=csv.QUOTE_MINIMAL )
 
             self.writeOneRowPerVector( _vectors, csv_writer )
+            print("file", _fileName, "successfully written")
 
 
     def writeOneRowPerVector(self, _vectors, _writer):
@@ -39,9 +40,9 @@ class CSV_handler:
 if __name__ == '__main__':
 
     phase_vectors = np.array( [[0.4, 1.3, 6.9], [0.3, 1.2, 6.8], [0.2, 1.1, 6.7]] )
-    myCSV_handler = CSV_handler('test_file.csv')
+    myCSV_handler = CSV_handler()
 
-    myCSV_handler.writeVectorsToFile( phase_vectors )
+    myCSV_handler.writeVectorsToFile( phase_vectors, 'test_file.csv' )
 
     print("done.")
 
