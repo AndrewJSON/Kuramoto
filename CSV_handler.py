@@ -6,7 +6,7 @@
  *   Author:             Philippe Lehmann
  * 
  * General description:
- *   xxx
+ *   https://realpython.com/python-csv/
 '''
 
 import csv
@@ -33,8 +33,18 @@ class CSV_handler:
 
     def writeOneRowPerVector(self, _vectors, _writer):
 
+            timeStepIndex = 0
             for vector in _vectors:
-                _writer.writerow( vector )
+                vectorWithTmStep = self.addTimeStepAsFirstElement( vector, \
+                                                                   timeStepIndex)
+                timeStepIndex += 1
+                _writer.writerow( vectorWithTmStep )
+
+
+    def addTimeStepAsFirstElement(self, _vector, _timeStepIndex):
+
+        insertInFrontOfElementInVector = 0  # 0 indicates first element
+        return np.insert(_vector, insertInFrontOfElementInVector, _timeStepIndex)
 
 
 if __name__ == '__main__':
