@@ -16,9 +16,8 @@ from numpy import diff
 
 class Kuramoto:
 
-    def __init__(self, _w, _a, _e, _b, _sigma):
+    def __init__(self,_a, _e, _b, _sigma):
 
-        self.w = _w
         self.a = _a
         self.e = _e
         self.b = _b
@@ -32,10 +31,57 @@ class Kuramoto:
         self.dkdt    = None
         self.Phis    = None
 
+
+    def solveKuramoto(self, _numOfOscillators, _numOfTimeSteps, _initCond):
+
+        self.N      = _numOfOscillators
+        self.x_init = _initCond
+
+        self.makeTimeLine( _numOfTimeSteps )
+
+        self.results = odeint( self.kuramotoderiv, self.x_init, self.t )
+
+
+    def makeTimeLine(self, _numOfTimeSteps):
+
+        startTime       = 0
+        endTime         = _numOfTimeSteps
+        numOfIntervalls = _numOfTimeSteps
+
+        self.t = np.linspace( startTime, endTime, numOfIntervalls )
+
+
+    def kuramotoderiv(self, _x, _t):
+        Phis = _x[:self.N]
+        Kappas = _x[self.N:].reshape(self.N, self.N)
+        DelPhis = (Phis - Phis[:, np.newaxis]).T
+        DKappa = -self.e * (np.sin(DelPhis + self.b) + Kappas)
+        DelPhis += self.a
+        DelPhis = Kappas * np.sin(DelPhis)
+        DPhis = -self.sigma*DelPhis.sum(axis=1) / Phis.shape[0] * (-1)
+        self.dydt = np.concatenate((DPhis, DKappa.flatten()))
+
+        return self.dydt
+
+
+    def getPhaseResults(self):
+
+        phases = np.array(self.results[: , :self.N])
+        return phases
+
+
+    def getCouplingResults(self):
+
+        couplings = np.array(self.results[: , self.N:self.N**2+self.N])
+        return couplings
+
+#########
+
     def printResults(self):
         print("Results:")
         print( self.results )
         print (self.results.shape)
+
 
     def printPhases(self):
 
@@ -48,6 +94,7 @@ class Kuramoto:
     def printInitialConditions(self):
         print("Initial conditions:")
         print(self.x_init)
+
 
     def printDydt(self):
         print( self.dydt )
@@ -74,52 +121,31 @@ class Kuramoto:
         return(nodes_sorted,kappa)
 
 
-    def kuramotoderiv(self, _x, _t):
-        Phis = _x[:self.N]
-        Kappas = _x[self.N:].reshape(self.N, self.N)
-        DelPhis = (Phis - Phis[:, np.newaxis]).T
-        DKappa = -self.e * (np.sin(DelPhis + self.b) + Kappas)
-        DelPhis += self.a
-        DelPhis = Kappas * np.sin(DelPhis)
-        DPhis = -self.sigma*DelPhis.sum(axis=1) / Phis.shape[0] * (-1)
-        self.dydt = np.concatenate((DPhis, DKappa.flatten()))
-
-        return self.dydt
-
-
-    def makeInitConditions(self):
+    def makeFurtherInitConditions(self, _LastResultsCSV):
         self.x_init = np.zeros(self.N*self.N+self.N)
-        np.random.seed(935)
-        #self.x_init[:] = (1+1) * np.random.random_sample(self.N*self.N+self.N) - 1
-        self.x_init[0:self.N] = (2*np.pi) * np.random.random_sample(self.N)
-        self.x_init[self.N:] = (1+1) * np.random.random_sample(self.N*self.N) - 1
+
+        "Read the Last Line of CSV Handler and replace the zeros in x_init"
 
 
-    def makeTimeLine(self):
-        self.t = np.linspace(0,1000,1000)
-
-
-    def solveKuramoto(self, _N):
-
+    def solveFurtherKuramoto(self, _N):
         self.N = _N
-        self.makeInitConditions()
+        self.makeFurtherInitConditions()
         self.makeTimeLine()
 
-        self.results = odeint( self.kuramotoderiv, self.x_init, self.t )
+        self.results = odeint( self.kuramotoderiv, self.x_init, self.t)
 
-        #print(self.results.shape)
         return self.results
 
 
-    def getPhases(self):
+    def getResultsOfLastTimeStep(self):
 
-        phases = np.array(self.results[: , :self.N])
-        return phases
+        LastResults = np.array(self.results[999, :])
+        return LastResults
 
 
 if __name__ == '__main__':
 
-    plot_results = False
+    plot_results = True
 
     w = np.linspace(0,50,num=50)
     a = 0.3*np.pi
@@ -129,7 +155,7 @@ if __name__ == '__main__':
 
     myKuramoto1 = Kuramoto(w, a, e, b, sigma)
 
-    kuramotoResults1 = myKuramoto1.solveKuramoto(50)
+    kuramotoResults1 = myKuramoto1.solveFirstKuramoto(50)
     myKuramoto1.printInitialConditions()
     #myKuramoto1.printResults()
     myKuramoto1.printPhases()

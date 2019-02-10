@@ -28,7 +28,7 @@ class CSV_handler:
                                      quoting=csv.QUOTE_MINIMAL )
 
             self.writeOneRowPerVector( _vectors, csv_writer )
-            print("file", _fileName, "successfully written")
+            print("file", _fileName, "successfully written")#yo
 
 
     def writeOneRowPerVector(self, _vectors, _writer):
