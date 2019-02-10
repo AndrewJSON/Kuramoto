@@ -17,9 +17,23 @@ class ProjectKuramoto:
         self.allResults       = None
 
 
+    def solveMultiStep(self, _numOfOscillators, _numOfTimeSteps, _steps):
+
+        self.solveKuramotoWithRandomInit( _numOfOscillators, _numOfTimeSteps)
+        lastResult = self.kuramoto.results[_numOfTimeSteps - 1]
+
+        for i in range(0, _steps):
+            self.solveKuramotoWithGivenInit( _numOfOscillators,
+                                             _numOfTimeSteps,
+                                             lastResult )
+            print("current result:", lastResult)
+            lastResult = self.kuramoto.results[_numOfTimeSteps - 1]
+            
+
+
     def solveKuramotoWithRandomInit(self, _numOfOscillators, _numOfTimeSteps):
 
-
+        self.N = _numOfOscillators
         self.makeRandomInitConditions()
         self.solveKuramotoWithGivenInit( _numOfOscillators,
                                          _numOfTimeSteps,
@@ -28,7 +42,6 @@ class ProjectKuramoto:
 
     def solveKuramotoWithGivenInit(self, _numOfOscillators, _numOfTimeSteps, _init):
 
-        self.N = _numOfOscillators
         self.kuramoto.solveKuramoto( _numOfOscillators,
                                      _numOfTimeSteps, 
                                      _init )
@@ -58,12 +71,12 @@ class ProjectKuramoto:
         self.x_init[self.N:] = (1+1) * np.random.random_sample(self.N*self.N) - 1
 
 
-    def getPhaseResults(self):
-        return self.kuramoto.getPhaseResults()
+    def getPhaseResults(self, _timeIndex=None):
+        return self.kuramoto.getPhaseResults( _timeIndex )
 
 
-    def getCouplingResults(self):
-        return self.kuramoto.getCouplingResults()
+    def getCouplingResults(self, _timeIndex=None):
+        return self.kuramoto.getCouplingResults( _timeIndex )
 
 
 def prepareProject():
@@ -89,21 +102,24 @@ if __name__ == '__main__':
                                                    numOfTimeSteps )
 
 
-    randPhases    = myProjectKuramoto.getPhaseResults()
-    randCouplings = myProjectKuramoto.getCouplingResults()
+    randPhases    = myProjectKuramoto.getPhaseResults( 999 )
+    randCouplings = myProjectKuramoto.getCouplingResults( 999 )
 
-#    step1Inits = np.concatenate( (randPhases, randCouplings) )
+    print("shape:", randPhases.shape)
 
-#    myProjectKuramoto.solveKuramotoWithGivenInit( numOfOscillators,
-#                                                  numOfTimeSteps,
-#                                                  step1Inits )
+ 
+    step1Inits = np.concatenate( (randPhases, randCouplings) )
 
-#    step1phases = myProjectKuramoto.getPhaseResults()
-#    step1Couplings = myProjectKuramoto.getCouplingResults()
+    myProjectKuramoto.solveKuramotoWithGivenInit( numOfOscillators,
+                                                  numOfTimeSteps,
+                                                  step1Inits )
 
-#    myCSV_handler.writeVectorsToFile( step1phases, 'phase-results.csv' )
-#    orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( step1phases )
-#    print("Order Parameter:", orderParameter)
+    step1phases = myProjectKuramoto.getPhaseResults()
+    step1Couplings = myProjectKuramoto.getCouplingResults()
+
+    myCSV_handler.writeVectorsToFile( step1phases, 'phase-results.csv' )
+    orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( step1phases )
+    print("Order Parameter:", orderParameter)
 
 #myKuramoto1.printResults()
 #mp.plot( kuramotoResults1 )

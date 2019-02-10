@@ -64,16 +64,25 @@ class Kuramoto:
         return self.dydt
 
 
-    def getPhaseResults(self):
+    def getPhaseResults(self, _timeIndex=None):
 
         phases = np.array(self.results[: , :self.N])
+
+        if _timeIndex:
+            return phases[_timeIndex]
+
         return phases
 
 
-    def getCouplingResults(self):
+    def getCouplingResults(self, _timeIndex=None):
 
         couplings = np.array(self.results[: , self.N:self.N**2+self.N])
+
+        if _timeIndex:
+            return couplings[_timeIndex]
+
         return couplings
+
 
 #########
 
