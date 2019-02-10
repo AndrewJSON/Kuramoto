@@ -21,24 +21,43 @@ class CSV_handler:
 
     def writeVectorsToFile(self, _vectors, _fileName='kuramoto-results.csv'):
 
-        with open( _fileName, mode='w' ) as out_file:
+        with open( _fileName, mode='a' ) as out_file:
             csv_writer = csv.writer( out_file,      \
                                      delimiter=',', \
                                      quotechar='"', \
                                      quoting=csv.QUOTE_MINIMAL )
 
-            self.writeOneRowPerVector( _vectors, csv_writer )
-            print("file", _fileName, "successfully written")#yo
+            self.writeVectors( _vectors, csv_writer )
+            print("file", _fileName, "successfully written")
 
 
-    def writeOneRowPerVector(self, _vectors, _writer):
+    def writeVectors(self, _vectors, _writer):
 
             timeStepIndex = 0
             for vector in _vectors:
-                vectorWithTmStep = self.addTimeStepAsFirstElement( vector, \
-                                                                   timeStepIndex)
                 timeStepIndex += 1
-                _writer.writerow( vectorWithTmStep )
+                self.writeOneRowPerVector( vector, _writer, timeStepIndex)
+
+
+    def writeVectorToFile(self, _vector,
+                                _timeStepIndex, 
+                                _fileName='kuramoto-results.csv'):
+
+        with open( _fileName, mode='a' ) as out_file:
+            csv_writer = csv.writer( out_file,      \
+                                     delimiter=',', \
+                                     quotechar='"', \
+                                     quoting=csv.QUOTE_MINIMAL )
+
+            self.writeOneRowPerVector( _vector, _timeStepIndex, csv_writer )
+            print("file", _fileName, "successfully written")
+
+
+    def writeOneRowPerVector(self, _vector, _timeStepIndex, _writer):
+
+        vectorWithTmStep = self.addTimeStepAsFirstElement( _vector, \
+                                                           _timeStepIndex)
+        _writer.writerow( vectorWithTmStep )
 
 
     def addTimeStepAsFirstElement(self, _vector, _timeStepIndex):
