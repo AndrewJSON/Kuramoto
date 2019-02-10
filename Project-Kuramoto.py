@@ -19,11 +19,19 @@ class ProjectKuramoto:
 
     def solveKuramotoWithRandomInit(self, _numOfOscillators, _numOfTimeSteps):
 
-        self.N = _numOfOscillators
+
         self.makeRandomInitConditions()
+        self.solveKuramotoWithGivenInit( _numOfOscillators,
+                                         _numOfTimeSteps,
+                                         self.x_init )
+
+
+    def solveKuramotoWithGivenInit(self, _numOfOscillators, _numOfTimeSteps, _init):
+
+        self.N = _numOfOscillators
         self.kuramoto.solveKuramoto( _numOfOscillators,
                                      _numOfTimeSteps, 
-                                     self.x_init )
+                                     _init )
 
 
     def makeRandomInitConditions(self):
@@ -81,12 +89,21 @@ if __name__ == '__main__':
                                                    numOfTimeSteps )
 
 
-    phases    = myProjectKuramoto.getPhaseResults()
-    couplings = myProjectKuramoto.getCouplingResults()
+    randPhases    = myProjectKuramoto.getPhaseResults()
+    randCouplings = myProjectKuramoto.getCouplingResults()
 
-    myCSV_handler.writeVectorsToFile( phases, 'phase-results.csv' )
-    orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( phases )
-    print("Order Parameter:", orderParameter)
+#    step1Inits = np.concatenate( (randPhases, randCouplings) )
+
+#    myProjectKuramoto.solveKuramotoWithGivenInit( numOfOscillators,
+#                                                  numOfTimeSteps,
+#                                                  step1Inits )
+
+#    step1phases = myProjectKuramoto.getPhaseResults()
+#    step1Couplings = myProjectKuramoto.getCouplingResults()
+
+#    myCSV_handler.writeVectorsToFile( step1phases, 'phase-results.csv' )
+#    orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( step1phases )
+#    print("Order Parameter:", orderParameter)
 
 #myKuramoto1.printResults()
 #mp.plot( kuramotoResults1 )
