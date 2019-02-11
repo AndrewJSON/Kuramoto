@@ -35,8 +35,9 @@ class ProjectKuramoto:
             self.solveKuramotoWithGivenInit( _numOfOscillators,
                                              _numOfTimeSteps,
                                              lastResult )
-            print("current sigma", self.kuramoto.sigma)
-            print("current result", i, ":", lastResult)
+
+            print("current sigma", self.kuramoto.sigma) #TODO
+            print("current result", i, ":", lastResult) #TODO
 
             phases = self.kuramoto.getResults( 'Phases', (799,999) )
             self.saveRun( phases, 'phase-results.csv' )
