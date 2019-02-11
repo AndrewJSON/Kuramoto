@@ -82,7 +82,7 @@ class Kuramoto:
 
 
         if _timeIntervall:
-            return selectResultsInTimeInterval( results, _timeIntervall )
+            return self.selectResultsInTimeInterval( results, _timeIntervall )
         else:
             return results
 
@@ -92,7 +92,7 @@ class Kuramoto:
         phases = self.results['Phases']
         couplings = self.results['Couplings']
 
-        resultsAsOneVectorPerTimeStep = np.concatenate((phases, couplings), axis=0)
+        resultsAsOneVectorPerTimeStep = np.concatenate((phases, couplings), axis=1)
         return resultsAsOneVectorPerTimeStep
 
 

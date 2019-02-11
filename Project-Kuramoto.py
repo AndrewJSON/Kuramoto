@@ -27,7 +27,8 @@ class ProjectKuramoto:
         self.solveKuramotoWithRandomInit( N_o, N_t)
 
         lastTimeStep = (N_t - 1, N_t)
-        lastResult = self.kuramoto.getResults( "all", lastTimeStep )
+        lastResult = self.kuramoto.getResults( "all", lastTimeStep )[0] #FIXME
+        print("last result", lastResult)
 
         for i in range(0, _runs):
 
@@ -39,10 +40,11 @@ class ProjectKuramoto:
 
             phases = self.kuramoto.getResults( 'Phases', (799,999) )
             self.saveRun( phases, 'phase-results.csv' )
-            
+
             self.kuramoto.sigma += 0.1
 
-            lastResult = self.kuramoto.results[_numOfTimeSteps - 1]
+            lastResult = self.kuramoto.getResults( "all", lastTimeStep )[0] #FIXME
+            #lastResult = self.kuramoto.results[_numOfTimeSteps - 1]
 
 
     def saveRun(self, _resultsToSave, _fileName):

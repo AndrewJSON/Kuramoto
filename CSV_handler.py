@@ -21,7 +21,7 @@ class CSV_handler:
 
     def writeVectorsToFile(self, _vectors, _fileName='kuramoto-results.csv'):
 
-        if isSingleVector( _vectors ):
+        if self.isSingleVector( _vectors ):
             _vectors = self.expandDimension( _vectors )
 
         with open( _fileName, mode='a' ) as out_file:
@@ -48,37 +48,18 @@ class CSV_handler:
 
     def writeVectors(self, _vectors, _writer):
 
-            timeStepIndex = 0
             for vector in _vectors:
-                timeStepIndex += 1
-                self.writeOneRowPerVector( vector, _writer, timeStepIndex)
+                self.writeOneRowPerVector( vector, _writer)
 
 
-    def writeVectorToFile(self, _vector,
-                                _timeStepIndex, 
-                                _fileName='kuramoto-results.csv'):
-
-        with open( _fileName, mode='a' ) as out_file:
-            csv_writer = csv.writer( out_file,      \
-                                     delimiter=',', \
-                                     quotechar='"', \
-                                     quoting=csv.QUOTE_MINIMAL )
-
-            self.writeOneRowPerVector( _vector, _timeStepIndex, csv_writer )
-            print("file", _fileName, "successfully written")
+    def writeOneRowPerVector(self, _vector, _writer):
+        _writer.writerow( _vector )
 
 
-    def writeOneRowPerVector(self, _vector, _timeStepIndex, _writer):
+#    def addTimeStepAsFirstElement(self, _vector, _timeStepIndex):
 
-        vectorWithTmStep = self.addTimeStepAsFirstElement( _vector, \
-                                                           _timeStepIndex)
-        _writer.writerow( vectorWithTmStep )
-
-
-    def addTimeStepAsFirstElement(self, _vector, _timeStepIndex):
-
-        insertInFrontOfElementInVector = 0  # 0 indicates first element
-        return np.insert(_vector, insertInFrontOfElementInVector, _timeStepIndex)
+#        insertInFrontOfElementInVector = 0  # 0 indicates first element
+#        return np.insert(_vector, insertInFrontOfElementInVector, _timeStepIndex)
 
 
 if __name__ == '__main__':
