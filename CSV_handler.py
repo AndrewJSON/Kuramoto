@@ -21,6 +21,9 @@ class CSV_handler:
 
     def writeVectorsToFile(self, _vectors, _fileName='kuramoto-results.csv'):
 
+        if isSingleVector( _vectors ):
+            _vectors = self.expandDimension( _vectors )
+
         with open( _fileName, mode='a' ) as out_file:
             csv_writer = csv.writer( out_file,      \
                                      delimiter=',', \
@@ -29,6 +32,18 @@ class CSV_handler:
 
             self.writeVectors( _vectors, csv_writer )
             print("file", _fileName, "successfully written")
+
+
+    def isSingleVector(self, _DUT):
+
+        if 1 == len(_DUT.shape):
+            return True
+        else:
+            return False
+
+
+    def expandDimension( _singleVector ):
+        return np.expand_dims(_singleVector, axis=0)
 
 
     def writeVectors(self, _vectors, _writer):

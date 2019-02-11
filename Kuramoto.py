@@ -24,7 +24,7 @@ class Kuramoto:
         self.sigma = _sigma
 
         self.dydt    = None
-        self.results = None
+        self.results = {}
         self.x_init  = None
         self.t       = None
         self.N       = 0
@@ -39,7 +39,14 @@ class Kuramoto:
 
         self.makeTimeLine( _numOfTimeSteps )
 
-        self.results = odeint( self.kuramotoderiv, self.x_init, self.t )
+        results = odeint( self.kuramotoderiv, self.x_init, self.t )
+        self.storeResultsAsDict( results )
+
+
+    def storeResultsAsDict(self, _results):
+
+        self.results['Phases']    = _results[: , :self.N]
+        self.results['Couplings'] = _results[: , self.N:self.N**2+self.N]
 
 
     def makeTimeLine(self, _numOfTimeSteps):
@@ -64,24 +71,36 @@ class Kuramoto:
         return self.dydt
 
 
-    def getPhaseResults(self, _timeIndex=None):
+    def getResults(self, _resultName, _timeIntervall=None):
 
-        phases = np.array(self.results[: , :self.N])
+        results = None
 
-        if _timeIndex:
-            return phases[_timeIndex]
+        if _resultName in self.results:
+            results = self.results[_resultName]
+        else:
+            results = self.getAllResultsInOneVectorPerTimeStep()
 
-        return phases
+
+        if _timeIntervall:
+            return selectResultsInTimeInterval( results, _timeIntervall )
+        else:
+            return results
 
 
-    def getCouplingResults(self, _timeIndex=None):
+    def getAllResultsInOneVectorPerTimeStep(self):
 
-        couplings = np.array(self.results[: , self.N:self.N**2+self.N])
+        phases = self.results['Phases']
+        couplings = self.results['Couplings']
 
-        if _timeIndex:
-            return couplings[_timeIndex]
+        resultsAsOneVectorPerTimeStep = np.concatenate((phases, couplings), axis=0)
+        return resultsAsOneVectorPerTimeStep
 
-        return couplings
+
+    def selectResultsInTimeInterval(self, _results, _timeIntervall):
+
+            t1 = _timeIntervall[0]
+            t2 = _timeIntervall[1]
+            return _results[t1:t2]
 
 
 #########
