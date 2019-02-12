@@ -25,9 +25,9 @@ class CSV_handler:
             _vectors = self.expandDimension( _vectors )
 
         with open( _fileName, mode='a' ) as out_file:
-            csv_writer = csv.writer( out_file,      \
-                                     delimiter=',', \
-                                     quotechar='"', \
+            csv_writer = csv.writer( out_file                 ,\
+                                     delimiter=','            ,\
+                                     quotechar='"'            ,\
                                      quoting=csv.QUOTE_MINIMAL )
 
             self.writeVectors( _vectors, csv_writer )
@@ -56,10 +56,20 @@ class CSV_handler:
         _writer.writerow( _vector )
 
 
-#    def addTimeStepAsFirstElement(self, _vector, _timeStepIndex):
+    def getVectorsFromFile(self, _fileName='kuramoto-results.csv'):
 
-#        insertInFrontOfElementInVector = 0  # 0 indicates first element
-#        return np.insert(_vector, insertInFrontOfElementInVector, _timeStepIndex)
+        with open( _fileName, mode='r' ) as in_file:
+            reader = csv.reader( in_file                  ,\
+                                 delimiter=','            ,\
+                                 quoting=csv.QUOTE_MINIMAL )
+
+            for row in reader:
+
+                npRow = np.asarray(row)
+                npRow = npRow.astype(np.float)
+                print(npRow)
+
+            print("successfully read", _fileName, )
 
 
 if __name__ == '__main__':
