@@ -18,56 +18,64 @@ class ProjectKuramoto:
         self.allResults       = None
 
 
-    def solveMultipleRunsWithSelfFeedingInit(self, _numOfOscillators,   
+    def solveMultipleRunsWithSelfFeedingInit(self, _numOsc,   
                                                    _numOfTimeSteps,
+                                                   _timeStepsToStore,
                                                    _runs):
-        numOsc = _numOfOscillators
         numTS = _numOfTimeSteps
 
-        self.solveKuramotoWithRandomInit( numOsc, numTS)
+        self.solveKuramotoWithRandomInit( _numOsc, numTS)
 
         lastTimeStep = (numTS - 1, numTS)
         #FIXME cake: getSingleResult vs. getResultTimeInterval
-        lastResult = self.kuramoto.getResults( "all", lastTimeStep )[0]
-        print("last result", lastResult)
+        newInitValue = self.kuramoto.getResults( "all", lastTimeStep )[0]
+
+        print("last result", newInitValue)
 
         for i in range(0, _runs):
 
-            self.solveKuramotoWithGivenInit( _numOfOscillators,
+            self.solveKuramotoWithGivenInit( _numOsc,
                                              _numOfTimeSteps,
-                                             lastResult )
+                                             newInitValue )
 
             print("current sigma", self.kuramoto.sigma) #TODO
-            print("current result", i, ":", lastResult) #TODO
+            print("current result", i, ":", newInitValue) #TODO
 
-            phases = self.kuramoto.getResults( 'Phases', (949,999) )
+            t1 = _numOfTimeSteps - _timeStepsToStore - 1
+            t2 = _numOfTimeSteps - 1
+
+            phases = self.kuramoto.getResults( 'Phases', (t1,t2) )
             self.saveRun( phases, 'phase-results.csv' )
 
             self.kuramoto.sigma += 0.1
             #FIXME cake
-            lastResult = self.kuramoto.getResults( "all", lastTimeStep )[0]
+            newInitValue = self.kuramoto.getResults( "all", lastTimeStep )[0]
 
 
     def saveRun(self, _resultsToSave, _fileName):
         self.csvHandler.writeVectorsToFile( _resultsToSave, _fileName )
 
 
-    def plotRunFromFile(self, _fileName):
-        self.csvHandler.getVectorsFromFile( _fileName )
+    def getRunFromFile(self, _fileName, _blockSize, _vectorLength):
+
+        run = self.csvHandler.getVectorBlockFromFile( _fileName    ,\
+                                                      _blockSize   ,\
+                                                      _vectorLength )
+        return run
 
 
-    def solveKuramotoWithRandomInit(self, _numOfOscillators, _numOfTimeSteps):
+    def solveKuramotoWithRandomInit(self, _numOsc, _numOfTimeSteps):
 
-        self.N = _numOfOscillators
+        self.N = _numOsc
         self.makeRandomInitConditions()
-        self.solveKuramotoWithGivenInit( _numOfOscillators,
+        self.solveKuramotoWithGivenInit( _numOsc,
                                          _numOfTimeSteps,
                                          self.x_init )
 
 
-    def solveKuramotoWithGivenInit(self, _numOfOscillators, _numOfTimeSteps, _init):
+    def solveKuramotoWithGivenInit(self, _numOsc, _numOfTimeSteps, _init):
 
-        self.kuramoto.solveKuramoto( _numOfOscillators,
+        self.kuramoto.solveKuramoto( _numOsc,
                                      _numOfTimeSteps, 
                                      _init )
 
@@ -121,12 +129,17 @@ if __name__ == '__main__':
     myProjectKuramoto = prepareProject()
     myOrderParameter = op.OrderParameter()
 
-    numOfOscillators = 50
+    numOsc = 50
     numOfTimeSteps   = 1000
-    #myProjectKuramoto.solveMultipleRunsWithSelfFeedingInit( numOfOscillators,
+    #myProjectKuramoto.solveMultipleRunsWithSelfFeedingInit( numOsc,
     #                                                        numOfTimeSteps, 3 )
 
-    myProjectKuramoto.plotRunFromFile( 'phase-results.csv' )
+    timeStepsToRead = 50
+    run = myProjectKuramoto.getRunFromFile( 'phase-results.csv',\
+                                            timeStepsToRead    ,\
+                                            numOsc              )
+    print(run)
+    print(run.shape)
 
     #myCSV_handler.writeVectorsToFile( step1phases, 'phase-results.csv' )
     #orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( step1phases )

@@ -56,20 +56,30 @@ class CSV_handler:
         _writer.writerow( _vector )
 
 
-    def getVectorsFromFile(self, _fileName='kuramoto-results.csv'):
+    def getVectorBlockFromFile(self, _fileName, _blockSize, _vectorLength):
+
+        vectorBlock = self.getPreparedNumpyArray( _blockSize, _vectorLength )
 
         with open( _fileName, mode='r' ) as in_file:
             reader = csv.reader( in_file                  ,\
                                  delimiter=','            ,\
                                  quoting=csv.QUOTE_MINIMAL )
 
-            for row in reader:
+            for i in range(0, _blockSize):
 
+                row = next(reader)
                 npRow = np.asarray(row)
                 npRow = npRow.astype(np.float)
-                print(npRow)
 
-            print("successfully read", _fileName, )
+                vectorBlock[i] = npRow
+
+            print("successfully read", _fileName, ) 
+
+        return vectorBlock
+ 
+
+    def getPreparedNumpyArray(self, _blockSize, _vectorLength):
+        return np.zeros( (_blockSize, _vectorLength) )
 
 
 if __name__ == '__main__':
