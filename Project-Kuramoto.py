@@ -15,53 +15,47 @@ class ProjectKuramoto:
         self.kuramoto         = _kuramoto
         self.csvHandler       = _csvHandler
         self.init             = _initGenerator
-        self.N                = None
+        self.numOsc           = 0
+        self.timeSteps        = 0
         self.allResults       = None
 
 
-    def solveMultipleRunsWithSelfFeedingInit(self, _numOsc,   
-                                                   _numOfTimeSteps,
-                                                   _timeStepsToStore,
-                                                   _runs):
-        numTS = _numOfTimeSteps
+    def solveMultipleRunsWithSelfFeedingInit(self, _runs, _timeStepsToStore):
 
-        self.solveKuramotoWithRandomInit( _numOsc, numTS)
-
-        lastTimeStep = (numTS - 1, numTS)
-        #FIXME cake slice: getSingleResult vs. getResultTimeInterval
-        newInitValue = self.kuramoto.getResults( "all", lastTimeStep )[0]
+        randomInit = self.init.makeRandomInitConditions( self.numOsc )
+        self.kuramoto.solveKuramoto( self.numOsc, self.timeSteps, randomInit )
+        newInitValue = self.getLastTimeStep()
 
         print("last result", newInitValue)
 
         for i in range(0, _runs):
 
-            self.solveKuramotoWithGivenInit( _numOsc,
-                                             _numOfTimeSteps,
-                                             newInitValue )
+            self.kuramoto.solveKuramoto( self.numOsc   ,\
+                                         self.timeSteps,\
+                                         newInitValue )
 
             print("current sigma", self.kuramoto.sigma)   #TODO
             print("current result", i, ":", newInitValue) #TODO
 
-            t1 = _numOfTimeSteps - _timeStepsToStore - 1
-            t2 = _numOfTimeSteps - 1
+            t1 = self.timeSteps - _timeStepsToStore - 1
+            t2 = self.timeSteps - 1
 
             phases = self.kuramoto.getResults( 'Phases', (t1,t2) )
             self.saveRun( phases, 'phase-results.csv' )
 
             self.kuramoto.sigma += 0.1
-            #FIXME cake slice
-            newInitValue = self.kuramoto.getResults( "all", lastTimeStep )[0]
+            newInitValue = self.getLastTimeStep()
 
 
     def saveRun(self, _resultsToSave, _fileName):
         self.csvHandler.writeVectorsToNewFile( _resultsToSave, _fileName )
 
 
-    def getRunFromFile(self, _fileName, _blockSize, _vectorLength):
+    def getRunFromFile(self, _fileName, _blockSize):
 
         run = self.csvHandler.getVectorBlockFromFile( _fileName    ,\
                                                       _blockSize   ,\
-                                                      _vectorLength )
+                                                      self.numOsc )
         return run
 
 
@@ -79,6 +73,12 @@ class ProjectKuramoto:
         self.kuramoto.solveKuramoto( _numOsc,
                                      _numOfTimeSteps, 
                                      _init )
+
+    def getLastTimeStep(self):
+
+        #FIXME cake slice: getSingleResult vs. getResultTimeInterval
+        lastTimeStep = (self.timeSteps - 1, self.timeSteps)
+        return self.kuramoto.getResults( "all", lastTimeStep )[0]
 
 
     def getPhaseResults(self, _timeIndex=None):
@@ -107,23 +107,18 @@ if __name__ == '__main__':
     myProjectKuramoto = prepareProject()
     myOrderParameter = op.OrderParameter()
 
-    numOsc = 50
-    numOfTimeSteps   = 100
+    myProjectKuramoto.numOsc    = 50
+    myProjectKuramoto.timeSteps = 100
+
     timeStepsToStore = 50
     numOfRuns        = 3
 
-
-    myProjectKuramoto.solveMultipleRunsWithSelfFeedingInit( numOsc          ,\
-                                                            numOfTimeSteps  ,\
-                                                            timeStepsToStore,\
-                                                            numOfRuns        )
-
+    myProjectKuramoto.solveMultipleRunsWithSelfFeedingInit( numOfRuns       ,\
+                                                            timeStepsToStore )
 
     timeStepsToRead = 50
     run = myProjectKuramoto.getRunFromFile( 'phase-results.csv',\
-                                            timeStepsToRead    ,\
-                                            numOsc              )
-
+                                            timeStepsToRead    )
 
     orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( run )
     print("Order Parameter:", orderParameter)
