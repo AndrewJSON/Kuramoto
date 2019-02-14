@@ -3,18 +3,19 @@ import numpy as np
 import matplotlib.pyplot as mp
 
 import Kuramoto as ku
-import OrderParameter as op
+import InitGenerator as ig
 import CSV_handler as ch
+import OrderParameter as op
 
 
 class ProjectKuramoto:
 
-    def __init__(self, _kuramotoInstance, _csvHandler):
+    def __init__(self, _kuramoto, _initGenerator, _csvHandler):
 
-        self.kuramoto         = _kuramotoInstance
+        self.kuramoto         = _kuramoto
         self.csvHandler       = _csvHandler
+        self.init             = _initGenerator
         self.N                = None
-        self.x_init           = None
         self.allResults       = None
 
 
@@ -67,10 +68,10 @@ class ProjectKuramoto:
     def solveKuramotoWithRandomInit(self, _numOsc, _numOfTimeSteps):
 
         self.N = _numOsc
-        self.makeRandomInitConditions()
+        randomInit = self.init.makeRandomInitConditions( _numOsc )
         self.solveKuramotoWithGivenInit( _numOsc,
                                          _numOfTimeSteps,
-                                         self.x_init )
+                                         randomInit )
 
 
     def solveKuramotoWithGivenInit(self, _numOsc, _numOfTimeSteps, _init):
@@ -78,30 +79,6 @@ class ProjectKuramoto:
         self.kuramoto.solveKuramoto( _numOsc,
                                      _numOfTimeSteps, 
                                      _init )
-
-
-    def makeRandomInitConditions(self):
-
-        self.prepareRandomGenerator()
-        self.prepareInitVector()
-        self.makeRandomInitPhases()
-        self.makeRandomInitCouplings()
-
-
-    def prepareRandomGenerator(self):
-        np.random.seed(935)
-
-
-    def prepareInitVector(self):
-        self.x_init = np.zeros(self.N*self.N+self.N)
-
-
-    def makeRandomInitPhases(self):
-        self.x_init[0:self.N] = (2*np.pi) * np.random.random_sample(self.N)
-
-
-    def makeRandomInitCouplings(self):
-        self.x_init[self.N:] = (1+1) * np.random.random_sample(self.N*self.N) - 1
 
 
     def getPhaseResults(self, _timeIndex=None):
@@ -119,9 +96,10 @@ def prepareProject():
     b     = 0.23*np.pi
     sigma = 1.0
 
-    myKuramoto1 = ku.Kuramoto(a, e, b, sigma)
-    myCSV_handler = ch.CSV_handler()
-    return ProjectKuramoto( myKuramoto1, myCSV_handler )
+    myKuramoto1     = ku.Kuramoto(a, e, b, sigma)
+    myInitGenerator = ig.InitGenerator()
+    myCSV_handler   = ch.CSV_handler()
+    return ProjectKuramoto( myKuramoto1, myInitGenerator, myCSV_handler )
 
 if __name__ == '__main__':
 
@@ -130,7 +108,7 @@ if __name__ == '__main__':
     myOrderParameter = op.OrderParameter()
 
     numOsc = 50
-    numOfTimeSteps   = 1000
+    numOfTimeSteps   = 100
     timeStepsToStore = 50
     numOfRuns        = 3
 

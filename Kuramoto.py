@@ -103,28 +103,6 @@ class Kuramoto:
             return _results[t1:t2]
 
 
-    def sortData(self,_N):
-
-       #sort Phi Data:
-
-        self.N = _N
-        Phis = self.results[:, :_N]
-        Omegas = (Phis[999, :] - Phis[200, :]) / 799
-        dtype = [('node', int), ('omega', float), ('phase', float)]
-
-        values = [(i,\
-                   round(Omegas[i], 2),\
-                   np.mod(Phis[999, i],\
-                   2 * np.pi)) for i in range(_N)]
-
-        nodes = np.array(values, dtype=dtype)
-        nodes_sorted = np.sort(nodes, order=['omega', 'phase'])
-        kappa = self.results[-1,_N:].reshape(_N,_N)
-        kappa = kappa[:, nodes_sorted['node']][nodes_sorted['node']]
-        return(nodes_sorted,kappa)
-
-
-
 if __name__ == '__main__':
 
     plot_results = True
