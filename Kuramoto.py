@@ -103,31 +103,6 @@ class Kuramoto:
             return _results[t1:t2]
 
 
-#########
-
-    def printResults(self):
-        print("Results:")
-        print( self.results )
-        print (self.results.shape)
-
-
-    def printPhases(self):
-
-        print("Phases:")
-        phases_only = self.getPhases()
-        print( phases_only )
-        print("shape:", phases_only.shape )
-
-
-    def printInitialConditions(self):
-        print("Initial conditions:")
-        print(self.x_init)
-
-
-    def printDydt(self):
-        print( self.dydt )
-
-
     def sortData(self,_N):
 
        #sort Phi Data:
@@ -148,27 +123,6 @@ class Kuramoto:
         kappa = kappa[:, nodes_sorted['node']][nodes_sorted['node']]
         return(nodes_sorted,kappa)
 
-
-    def makeFurtherInitConditions(self, _LastResultsCSV):
-        self.x_init = np.zeros(self.N*self.N+self.N)
-
-        "Read the Last Line of CSV Handler and replace the zeros in x_init"
-
-
-    def solveFurtherKuramoto(self, _N):
-        self.N = _N
-        self.makeFurtherInitConditions()
-        self.makeTimeLine()
-
-        self.results = odeint( self.kuramotoderiv, self.x_init, self.t)
-
-        return self.results
-
-
-    def getResultsOfLastTimeStep(self):
-
-        LastResults = np.array(self.results[999, :])
-        return LastResults
 
 
 if __name__ == '__main__':

@@ -27,7 +27,7 @@ class ProjectKuramoto:
         self.solveKuramotoWithRandomInit( _numOsc, numTS)
 
         lastTimeStep = (numTS - 1, numTS)
-        #FIXME cake: getSingleResult vs. getResultTimeInterval
+        #FIXME cake slice: getSingleResult vs. getResultTimeInterval
         newInitValue = self.kuramoto.getResults( "all", lastTimeStep )[0]
 
         print("last result", newInitValue)
@@ -38,7 +38,7 @@ class ProjectKuramoto:
                                              _numOfTimeSteps,
                                              newInitValue )
 
-            print("current sigma", self.kuramoto.sigma) #TODO
+            print("current sigma", self.kuramoto.sigma)   #TODO
             print("current result", i, ":", newInitValue) #TODO
 
             t1 = _numOfTimeSteps - _timeStepsToStore - 1
@@ -48,12 +48,12 @@ class ProjectKuramoto:
             self.saveRun( phases, 'phase-results.csv' )
 
             self.kuramoto.sigma += 0.1
-            #FIXME cake
+            #FIXME cake slice
             newInitValue = self.kuramoto.getResults( "all", lastTimeStep )[0]
 
 
     def saveRun(self, _resultsToSave, _fileName):
-        self.csvHandler.writeVectorsToFile( _resultsToSave, _fileName )
+        self.csvHandler.writeVectorsToNewFile( _resultsToSave, _fileName )
 
 
     def getRunFromFile(self, _fileName, _blockSize, _vectorLength):

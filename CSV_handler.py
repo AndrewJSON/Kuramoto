@@ -19,37 +19,40 @@ class CSV_handler:
         pass
 
 
-    def writeVectorsToFile(self, _vectors, _fileName='kuramoto-results.csv'):
+    def appendVectorsToFile(self, _vectors, _fileName):
+        self.writeVectorsToFile( _vectors, 'a', _fileName )
 
-        if self.isSingleVector( _vectors ):
-            _vectors = self.expandDimension( _vectors )
 
-        with open( _fileName, mode='a' ) as out_file:
-            csv_writer = csv.writer( out_file                 ,\
-                                     delimiter=','            ,\
-                                     quotechar='"'            ,\
-                                     quoting=csv.QUOTE_MINIMAL )
+    def writeVectorsToNewFile(self, _vectors, _fileName):
+        self.writeVectorsToFile( _vectors, 'w', _fileName )
+
+
+    def writeVectorsToFile(self, _vectors                ,\
+                                 _fileAccessMode         ,\
+                                 _fileName = 'default.csv'):
+
+        with open( _fileName, mode = _fileAccessMode ) as out_file:
+            csv_writer = csv.writer( out_file, delimiter=',' )
 
             self.writeVectors( _vectors, csv_writer )
             print("file", _fileName, "successfully written")
 
 
-    def isSingleVector(self, _DUT):
-
-        if 1 == len(_DUT.shape):
-            return True
-        else:
-            return False
-
-
-    def expandDimension( _singleVector ):
-        return np.expand_dims(_singleVector, axis=0)
-
-
     def writeVectors(self, _vectors, _writer):
 
-            for vector in _vectors:
-                self.writeOneRowPerVector( vector, _writer)
+        if self.isSingleVector( _vectors ):
+            _vectors = self.expandVectorDimension( _vectors )
+
+        for vector in _vectors:
+            self.writeOneRowPerVector( vector, _writer)
+
+
+    def isSingleVector(self, _DUT):
+        return ( 1 == len(_DUT.shape) )
+
+
+    def expandVectorDimension(self, _singleVector):
+        return np.expand_dims(_singleVector, axis=0)
 
 
     def writeOneRowPerVector(self, _vector, _writer):
