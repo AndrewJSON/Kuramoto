@@ -134,12 +134,12 @@ if __name__ == '__main__':
     timeStepsToStore = 50
     numOfRuns        = 3
 
-'''
+
     myProjectKuramoto.solveMultipleRunsWithSelfFeedingInit( numOsc          ,\
                                                             numOfTimeSteps  ,\
                                                             timeStepsToStore,\
                                                             numOfRuns        )
-'''
+
 
     timeStepsToRead = 50
     run = myProjectKuramoto.getRunFromFile( 'phase-results.csv',\
