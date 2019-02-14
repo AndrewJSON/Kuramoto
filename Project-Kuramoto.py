@@ -131,19 +131,24 @@ if __name__ == '__main__':
 
     numOsc = 50
     numOfTimeSteps   = 1000
-    #myProjectKuramoto.solveMultipleRunsWithSelfFeedingInit( numOsc,
-    #                                                        numOfTimeSteps, 3 )
+    timeStepsToStore = 50
+    numOfRuns        = 3
+
+'''
+    myProjectKuramoto.solveMultipleRunsWithSelfFeedingInit( numOsc          ,\
+                                                            numOfTimeSteps  ,\
+                                                            timeStepsToStore,\
+                                                            numOfRuns        )
+'''
 
     timeStepsToRead = 50
     run = myProjectKuramoto.getRunFromFile( 'phase-results.csv',\
                                             timeStepsToRead    ,\
                                             numOsc              )
-    print(run)
-    print(run.shape)
 
-    #myCSV_handler.writeVectorsToFile( step1phases, 'phase-results.csv' )
-    #orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( step1phases )
-    #print("Order Parameter:", orderParameter)
+
+    orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( run )
+    print("Order Parameter:", orderParameter)
 
 #myKuramoto1.printResults()
 #mp.plot( kuramotoResults1 )

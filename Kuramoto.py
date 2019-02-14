@@ -43,12 +43,6 @@ class Kuramoto:
         self.storeResultsAsDict( results )
 
 
-    def storeResultsAsDict(self, _results):
-
-        self.results['Phases']    = _results[: , :self.N]
-        self.results['Couplings'] = _results[: , self.N:self.N**2+self.N]
-
-
     def makeTimeLine(self, _numOfTimeSteps):
 
         startTime       = 0
@@ -56,6 +50,12 @@ class Kuramoto:
         numOfIntervalls = _numOfTimeSteps
 
         self.t = np.linspace( startTime, endTime, numOfIntervalls )
+
+
+    def storeResultsAsDict(self, _results):
+
+        self.results['Phases']    = _results[: , :self.N]
+        self.results['Couplings'] = _results[: , self.N:self.N**2+self.N]
 
 
     def kuramotoderiv(self, _x, _t):
