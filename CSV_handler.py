@@ -11,7 +11,8 @@
 
 import csv
 import numpy as np
-
+from itertools import islice
+ 
 
 class CSV_handler:
 
@@ -79,10 +80,17 @@ class CSV_handler:
             print("successfully read", _fileName, ) 
 
         return vectorBlock
- 
+
 
     def getPreparedNumpyArray(self, _blockSize, _vectorLength):
         return np.zeros( (_blockSize, _vectorLength) )
+
+
+    def getVectorsBelowRowNumber(self, _row=100):
+
+        with open('my_data.csv') as fd:
+            for row in islice(csv.reader(fd), _row, None):
+                print(row)
 
 
 if __name__ == '__main__':
