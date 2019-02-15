@@ -120,13 +120,18 @@ if __name__ == '__main__':
                                                             timeStepsToStore )
 
     timeStepsToRead = 50
-    run = myProjectKuramoto.getRunFromFile( 'phase-results.csv',\
-                                            timeStepsToRead    )
-
+    fileName        = 'phase-results.csv'
+    run = myProjectKuramoto.getRunFromFile( fileName, timeStepsToRead )
     orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( run )
     print("Order Parameter:", orderParameter)
 
-    myProjectKuramoto.csvHandler.reader.getVectorBlock(30,40)
+
+    start = 0
+    stop = 50
+    vectorBlock = myProjectKuramoto.csvHandler.reader.getVectorBlock( start, stop )
+    orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( vectorBlock )
+    print("Order Parameter:", orderParameter)
+
 
 #myKuramoto1.printResults()
 #mp.plot( kuramotoResults1 )

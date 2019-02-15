@@ -65,8 +65,9 @@ class CSV_vectorReader:
 
                 npRow = np.asarray(row)
                 npRow = npRow.astype(np.float)
+                vectorBlock[i] = npRow
 
-                print(i, npRow)
+        return vectorBlock
 
 
     def printVectorBlock(self, _start, _stop, _fileName='phase-results.csv' ):
