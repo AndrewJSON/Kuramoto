@@ -1,11 +1,13 @@
 
-import numpy as np
+import numpy             as np
 import matplotlib.pyplot as mp
 
-import Kuramoto as ku
-import InitGenerator as ig
-import CSV_handler as ch
-import OrderParameter as op
+import Kuramoto         as ku
+import InitGenerator    as ig
+import CSV_handler      as ch
+import CSV_vectorWriter as vw
+import CSV_vectorReader as vr
+import OrderParameter   as op
 
 
 class ProjectKuramoto:
@@ -98,7 +100,10 @@ def prepareProject():
 
     myKuramoto1     = ku.Kuramoto(a, e, b, sigma)
     myInitGenerator = ig.InitGenerator()
-    myCSV_handler   = ch.CSV_handler()
+    myVectorWriter  = vw.CSV_vectorWriter()
+    myVectorReader  = vr.CSV_vectorReader()
+    myCSV_handler   = ch.CSV_handler( myVectorWriter, myVectorReader )
+
     return ProjectKuramoto( myKuramoto1, myInitGenerator, myCSV_handler )
 
 if __name__ == '__main__':
