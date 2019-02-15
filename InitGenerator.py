@@ -23,9 +23,12 @@ class InitGenerator:
         self.initValues = None
         self.N = 1
 
-    def makeRandomInitConditions(self, _N):
 
-        self.N = _N
+    def setNumberOfOscillators(self, _numOsc):
+        self.N = _numOsc
+
+
+    def makeRandomInitConditions(self):
 
         self.prepareRandomGenerator()
         self.prepareInitVector()

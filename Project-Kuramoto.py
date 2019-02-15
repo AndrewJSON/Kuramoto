@@ -12,29 +12,41 @@ import OrderParameter   as op
 
 class ProjectKuramoto:
 
-    def __init__(self, _kuramoto, _initGenerator, _csvHandler):
+    def __init__(self, _kuramoto, _initGenerator, _csvHandler, _numOsc=50):
 
         self.kuramoto         = _kuramoto
-        self.csvHandler       = _csvHandler
         self.init             = _initGenerator
+        self.csvHandler       = _csvHandler
+
         self.numOsc           = 0
         self.timeSteps        = 0
         self.allResults       = None
 
+        self.setNumberOfOscillators( _numOsc )
+
+
+    def setNumberOfOscillators(self, _numOsc):
+
+        self.numOsc   = _numOsc
+
+        self.kuramoto.setNumberOfOscillators( _numOsc )
+        self.init.setNumberOfOscillators( _numOsc )
+        self.csvHandler.setVectorLength( _numOsc )
+
+        print("\nNumber of oscillators set to", self.numOsc, "\n")
+
 
     def solveMultipleRunsWithSelfFeedingInit(self, _runs, _timeStepsToStore):
 
-        randomInit = self.init.makeRandomInitConditions( self.numOsc )
-        self.kuramoto.solveKuramoto( self.numOsc, self.timeSteps, randomInit )
+        randomInit = self.init.makeRandomInitConditions()
+        self.kuramoto.solveKuramoto( self.timeSteps, randomInit )
         newInitValue = self.getLastTimeStep()
 
         print("last result", newInitValue)
 
         for i in range(0, _runs):
 
-            self.kuramoto.solveKuramoto( self.numOsc   ,\
-                                         self.timeSteps,\
-                                         newInitValue )
+            self.kuramoto.solveKuramoto( self.timeSteps, newInitValue )
 
             print("current sigma", self.kuramoto.sigma)   #TODO
             print("current result", i, ":", newInitValue) #TODO
@@ -54,27 +66,12 @@ class ProjectKuramoto:
 
 
     def getRunFromFile(self, _fileName, _blockSize):
-
-        run = self.csvHandler.getVectorBlockFromFile( _fileName    ,\
-                                                      _blockSize   ,\
-                                                      self.numOsc )
-        return run
+        return self.csvHandler.getVectorBlockFromFile( _fileName, _blockSize )
 
 
-    def solveKuramotoWithRandomInit(self, _numOsc, _numOfTimeSteps):
+    def solveKuramotoWithGivenInit(self, _numOfTimeSteps, _init):
+        self.kuramoto.solveKuramoto( _numOfTimeSteps, _init )
 
-        self.N = _numOsc
-        randomInit = self.init.makeRandomInitConditions( _numOsc )
-        self.solveKuramotoWithGivenInit( _numOsc,
-                                         _numOfTimeSteps,
-                                         randomInit )
-
-
-    def solveKuramotoWithGivenInit(self, _numOsc, _numOfTimeSteps, _init):
-
-        self.kuramoto.solveKuramoto( _numOsc,
-                                     _numOfTimeSteps, 
-                                     _init )
 
     def getLastTimeStep(self):
 
@@ -93,10 +90,11 @@ class ProjectKuramoto:
 
 def prepareProject():
 
-    a     = 0.3*np.pi
-    e     = 0.01
-    b     = 0.23*np.pi
-    sigma = 1.0
+    a      = 0.3*np.pi
+    e      = 0.01
+    b      = 0.23*np.pi
+    sigma  = 1.0
+    numOsc = 50
 
     myKuramoto1     = ku.Kuramoto(a, e, b, sigma)
     myInitGenerator = ig.InitGenerator()
@@ -104,7 +102,7 @@ def prepareProject():
     myVectorReader  = vr.CSV_vectorReader()
     myCSV_handler   = ch.CSV_handler( myVectorWriter, myVectorReader )
 
-    return ProjectKuramoto( myKuramoto1, myInitGenerator, myCSV_handler )
+    return ProjectKuramoto( myKuramoto1, myInitGenerator, myCSV_handler, numOsc )
 
 if __name__ == '__main__':
 

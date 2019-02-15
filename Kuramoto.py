@@ -32,9 +32,12 @@ class Kuramoto:
         self.Phis    = None
 
 
-    def solveKuramoto(self, _numOfOscillators, _numOfTimeSteps, _initCond):
+    def setNumberOfOscillators(self, _numOsc):
+        self.N = _numOsc
 
-        self.N      = _numOfOscillators
+
+    def solveKuramoto(self, _numOfTimeSteps, _initCond):
+
         self.x_init = _initCond
 
         self.makeTimeLine( _numOfTimeSteps )

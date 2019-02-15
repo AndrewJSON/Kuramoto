@@ -16,12 +16,16 @@ import numpy as np
 class CSV_vectorReader:
 
     def __init__(self):
-        pass
+        self.vectorLength = 1
 
 
-    def getVectorBlockFromFile(self, _fileName, _blockSize, _vectorLength):
+    def setVectorLength(self, _N):
+        self.vectorLength = _N
 
-        vectorBlock = self.getPreparedNumpyArray( _blockSize, _vectorLength )
+
+    def getVectorBlockFromFile(self, _fileName, _blockSize):
+
+        vectorBlock = self.getPreparedNumpyArray( _blockSize )
 
         with open( _fileName, mode='r' ) as in_file:
             reader = csv.reader( in_file                  ,\
@@ -41,8 +45,8 @@ class CSV_vectorReader:
         return vectorBlock
 
 
-    def getPreparedNumpyArray(self, _blockSize, _vectorLength):
-        return np.zeros( (_blockSize, _vectorLength) )
+    def getPreparedNumpyArray(self, _blockSize):
+        return np.zeros( (_blockSize, self.vectorLength) )
 
 
     def getVectorsBelowRowNumber(self, _row=100):

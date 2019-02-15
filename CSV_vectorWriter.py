@@ -15,7 +15,11 @@ import csv
 class CSV_vectorWriter:
 
     def __init__(self):
-        pass
+        self.vectorLength = 1
+
+
+    def setVectorLength(self, _N):
+        self.vectorLength = _N
 
 
     def writeVectorsToFile(self, _vectors                ,\

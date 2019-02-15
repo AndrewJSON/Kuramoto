@@ -22,6 +22,12 @@ class CSV_handler:
         self.reader = _reader
 
 
+    def setVectorLength(self, _N):
+
+        self.writer.setVectorLength( _N )
+        self.reader.setVectorLength( _N )
+
+
     def appendVectorsToFile(self, _vectors, _fileName):
         self.writer.writeVectorsToFile( _vectors, 'a', _fileName )
 
@@ -30,10 +36,8 @@ class CSV_handler:
         self.writer.writeVectorsToFile( _vectors, 'w', _fileName )
 
 
-    def getVectorBlockFromFile(self, _fileName, _blockSize, _vectorLength):
-
-        block = self.reader.getVectorBlockFromFile(_fileName, _blockSize, _vectorLength)
-        return block
+    def getVectorBlockFromFile(self, _fileName, _blockSize):
+        return self.reader.getVectorBlockFromFile(_fileName, _blockSize)
 
 
 ''' END '''
