@@ -11,6 +11,7 @@
 
 import csv
 import numpy as np
+from itertools import islice
 
 
 class CSV_vectorReader:
@@ -49,12 +50,48 @@ class CSV_vectorReader:
         return np.zeros( (_blockSize, self.vectorLength) )
 
 
-    def getVectorsBelowRowNumber(self, _row=100):
 
+    def getVectorBlock(self, _start, _stop, _fileName='phase-results.csv' ):
+
+        blockSize = _stop - _start
+        vectorBlock = self.getPreparedNumpyArray( blockSize )
+
+        with open( _fileName, mode='r' ) as in_file:
+
+            reader = csv.reader( in_file, delimiter=',' )
+            block  = islice(reader, _start, _stop)
+
+            for i, row in enumerate(block):
+
+                npRow = np.asarray(row)
+                npRow = npRow.astype(np.float)
+
+                print(i, npRow)
+
+
+    def printVectorBlock(self, _start, _stop, _fileName='phase-results.csv' ):
+
+        blockSize = _stop - _start
+        vectorBlock = self.getPreparedNumpyArray( blockSize )
+
+        with open( _fileName, mode='r' ) as in_file:
+
+            reader = csv.reader( in_file, delimiter=',' )
+            block  = islice(reader, _start, _stop)
+
+            for i, row in enumerate(block):
+
+                npRow = np.asarray(row)
+                npRow = npRow.astype(np.float)
+
+                print(i, npRow)
+
+
+'''
         with open('my_data.csv') as fd:
             for row in islice(csv.reader(fd), _row, None):
                 print(row)
-
+'''
 
 ''' END '''
 

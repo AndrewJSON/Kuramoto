@@ -126,6 +126,8 @@ if __name__ == '__main__':
     orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( run )
     print("Order Parameter:", orderParameter)
 
+    myProjectKuramoto.csvHandler.reader.getVectorBlock(30,40)
+
 #myKuramoto1.printResults()
 #mp.plot( kuramotoResults1 )
 #mp.show()
