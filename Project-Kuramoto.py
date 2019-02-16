@@ -62,7 +62,9 @@ class ProjectKuramoto:
 
 
     def saveRun(self, _resultsToSave, _fileName):
-        self.csvHandler.writeVectorsToNewFile( _resultsToSave, _fileName )
+
+        self.csvHandler.appendVectorsToFile( _resultsToSave, _fileName )
+        #self.csvHandler.writeVectorsToNewFile( _resultsToSave, _fileName )
 
 
     def getRunFromFile(self, _fileName, _blockSize):
@@ -110,8 +112,7 @@ if __name__ == '__main__':
     myProjectKuramoto = prepareProject()
     myOrderParameter = op.OrderParameter()
 
-    myProjectKuramoto.numOsc    = 50
-    myProjectKuramoto.timeSteps = 100
+    myProjectKuramoto.timeSteps = 200
 
     timeStepsToStore = 50
     numOfRuns        = 3
@@ -119,29 +120,15 @@ if __name__ == '__main__':
     myProjectKuramoto.solveMultipleRunsWithSelfFeedingInit( numOfRuns       ,\
                                                             timeStepsToStore )
 
-    timeStepsToRead = 50
-    fileName        = 'phase-results.csv'
-    run = myProjectKuramoto.getRunFromFile( fileName, timeStepsToRead )
-    orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( run )
-    print("Order Parameter:", orderParameter)
+    for runNumber in range(0, numOfRuns):
 
+        startReadOffset = runNumber * timeStepsToStore
+        start = startReadOffset
+        stop = startReadOffset + timeStepsToStore
 
-    start = 0
-    stop = 50
-    vectorBlock = myProjectKuramoto.csvHandler.reader.getVectorBlock( start, stop )
-    orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( vectorBlock )
-    print("Order Parameter:", orderParameter)
-
-
-#myKuramoto1.printResults()
-#mp.plot( kuramotoResults1 )
-#mp.show()
-#Phases, Kappas = myKuramoto1.sortData(50)
-#mp.plot (Phases[:]["omega"])
-#mp.show()
-#mp.imshow(Kappas,origin = "lower")
-#mp.colorbar()
-#mp.show()
+        block = myProjectKuramoto.csvHandler.reader.getVectorBlock( start, stop )
+        orderParameter = myOrderParameter.SumUpOrderMatrix_Elements( block )
+        print("Order Parameter of run ", runNumber, orderParameter)
 
 ''' END '''
 
